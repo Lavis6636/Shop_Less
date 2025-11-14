@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Less | {{ title if title else "Store" }}</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-content-wrapper" style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="brand">
+                <h1>Shop Less</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('products') }}">Products</a>
+
+                {% if 'user_id' in session %}
+                    {% if session.get('role') != 'Admin' %}
+                        <!-- Cart only for non-admin users -->
+                        <a href="{{ url_for('cart') }}" class="cart-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge" id="cart-badge">{{ total_items }}</span>
+                        </a>
+                    {% endif %}
+                    <a href="{{ url_for('profile') }}">Profile</a>
+                    {% if session.get('role') == 'Admin' %}
+                        <a href="{{ url_for('admin_panel') }}">Admin Panel</a>
+                        <a href="{{ url_for('ai_dashboard') }}">AI Dashboard</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <!-- Guests see cart as zero -->
+                    <a href="{{ url_for('cart') }}" class="cart-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cart-badge">0</span>
+                    </a>
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% set icons = {'danger':'exclamation-circle', 'success':'check-circle', 'info':'info-circle'} %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <i class="fas fa-{{ icons.get(category, 'exclamation-triangle') }}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="site-main site-content-wrapper">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-content-wrapper">
+            <p>© {{ now().year }} Shop Less – Quality Phones & Affordable Deals</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    {% if request.endpoint == 'home' %}
+        <script src="{{ url_for('static', filename='homepage.js') }}"></script>
+    {% endif %}
+    
+    {% if request.endpoint in ['login', 'register'] %}
+        <script src="{{ url_for('static', filename='auth.js') }}"></script>
+    {% endif %}
+</body>
+</html>

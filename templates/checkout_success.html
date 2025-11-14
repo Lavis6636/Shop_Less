@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="app-container">
+    <h2>Checkout Successful</h2>
+    <p>Your transaction ID: <strong>{{ transaction_id }}</strong></p>
+
+    {% if transaction %}
+        <h3>Purchased Items:</h3>
+        <ul>
+            {% for item in transaction.items %}
+                <li>{{ item.name }} ({{ item.sku }}) x {{ item.quantity }} - M{{ item.total_price|round(2) }}</li>
+            {% endfor %}
+        </ul>
+        <p><strong>Total Paid: M{{ transaction.total_price|round(2) }}</strong></p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-container">
+    <h2 class="section-title">Blockchain Ledger</h2>
+    <div class="products-header-bar"></div>
+    
+    <div class="blockchain-info">
+        <div class="chain-stats">
+            <div class="stat-item">
+                <span class="stat-label">Total Blocks:</span>
+                <span class="stat-value">{{ length }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Chain Valid:</span>
+                <span class="stat-value valid">✓</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="blocks-container">
+        {% for block in chain %}
+        <div class="block-card">
+            <div class="block-header">
+                <h3 class="block-title">Block #{{ block.index }}</h3>
+                <span class="block-hash">{{ block.previous_hash[:16] }}...</span>
+            </div>
+            
+                <div class="detail-row">
+                    <span class="detail-label">Timestamp:</span>
+                    <span class="detail-value">{{ block.timestamp | datetimeformat }}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Proof:</span>
+                    <span class="detail-value proof-value">{{ block.proof }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Transactions:</span>
+                    <span class="detail-value">{{ block.transactions|length }}</span>
+                </div>
+            </div>
+            
+            {% if block.transactions %}
+            <div class="transactions-list">
+                <h4>Transactions:</h4>
+                {% for tx in block.transactions %}
+            <div class="transaction-item">
+                <div class="tx-header">
+                    <span class="tx-sender">{{ tx.sender }} → {{ tx.recipient }}</span>
+                    <span class="tx-amount">M{{ "%.2f"|format(tx.amount) }}</span>
+                </div>
+                <div class="tx-timestamp">
+                    <small>{{ tx.timestamp | datetimeformat }}</small>
+                </div>
+            </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

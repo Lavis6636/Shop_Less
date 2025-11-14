@@ -1,0 +1,395 @@
+<!-- templates/security_dashboard.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="security-container">
+    <h2 class="section-title">Security Dashboard</h2>
+    <div class="products-header-bar"></div>
+    
+    <div class="security-grid">
+        <!-- Data Classification -->
+        <div class="security-card">
+            <h3><i class="fas fa-shield-alt"></i> Data Classification</h3>
+            <div class="classification-levels">
+                <div class="level public">
+                    <span class="level-name">Public</span>
+                    <span class="level-desc">Username, Role, Join Date</span>
+                </div>
+                <div class="level private">
+                    <span class="level-name">Private</span>
+                    <span class="level-desc">Email, Last Login</span>
+                </div>
+                <div class="level confidential">
+                    <span class="level-name">Confidential</span>
+                    <span class="level-desc">Password, Session Tokens</span>
+                </div>
+                <div class="level restricted">
+                    <span class="level-name">Restricted</span>
+                    <span class="level-desc">IP Address, Payment Info</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Permission Matrix -->
+        <div class="security-card">
+            <h3><i class="fas fa-user-lock"></i> Permission Matrix</h3>
+            <table class="permission-table">
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Read</th>
+                        <th>Write</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Customer</td>
+                        <td>Products, Cart, Profile</td>
+                        <td>Cart, Profile, Orders</td>
+                        <td>Cart Items</td>
+                    </tr>
+                    <tr>
+                        <td>Admin</td>
+                        <td>All Data</td>
+                        <td>All Data</td>
+                        <td>All Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- GDPR Compliance -->
+        <div class="security-card">
+            <h3><i class="fas fa-gavel"></i> GDPR Compliance</h3>
+            <div class="gdpr-rights">
+                {% for right, desc in gdpr_rights.items() %}
+                <div class="gdpr-item">
+                    <strong>{{ right.replace('_', ' ').title() }}:</strong>
+                    <span>{{ desc }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Security Logs -->
+        <div class="security-card full-width">
+            <h3><i class="fas fa-clipboard-list"></i> Security Events</h3>
+            <div class="security-logs">
+                {% for log in security_logs %}
+                <div class="log-entry {{ log.level }}">
+                    <span class="log-time">{{ log.timestamp }}</span>
+                    <span class="log-message">{{ log.message }}</span>
+                    <span class="log-user">{{ log.user }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="security-card">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="security-actions">
+                <a href="{{ url_for('blockchain_ledger') }}" class="security-btn">
+                    <i class="fas fa-link"></i>
+                    View Blockchain
+                </a>
+                <a href="{{ url_for('ai_dashboard') }}" class="security-btn">
+                    <i class="fas fa-brain"></i>
+                    AI Dashboard
+                </a>
+                <a href="{{ url_for('view_transactions') }}" class="security-btn">
+                    <i class="fas fa-list"></i>
+                    View Transactions
+                </a>
+            </div>
+        </div>
+        
+        <!-- System Status -->
+        <div class="security-card">
+            <h3><i class="fas fa-heartbeat"></i> System Status</h3>
+            <div class="system-status">
+                <div class="status-item">
+                    <span class="status-label">Blockchain:</span>
+                    <span class="status-value active">Operational</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Database:</span>
+                    <span class="status-value active">Secure</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">AI Models:</span>
+                    <span class="status-value active">Trained</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">GDPR Compliance:</span>
+                    <span class="status-value active">Verified</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.security-container {
+    padding: 20px 0;
+}
+
+.security-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.security-card {
+    background: #111;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    transition: transform 0.3s ease;
+}
+
+.security-card:hover {
+    transform: translateY(-5px);
+    border-color: #ffc300;
+}
+
+.security-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.security-card h3 {
+    color: #ffc300;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.classification-levels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.level {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+}
+
+.level:hover {
+    transform: translateX(5px);
+}
+
+.level.public { 
+    border-color: #51cf66; 
+    background: rgba(81, 207, 102, 0.1); 
+}
+.level.private { 
+    border-color: #339af0; 
+    background: rgba(51, 154, 240, 0.1); 
+}
+.level.confidential { 
+    border-color: #ffd43b; 
+    background: rgba(255, 212, 59, 0.1); 
+}
+.level.restricted { 
+    border-color: #ff6b6b; 
+    background: rgba(255, 107, 107, 0.1); 
+}
+
+.level-name {
+    font-weight: 700;
+    color: #fff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.level-desc {
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+.permission-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+.permission-table th {
+    background: rgba(255, 195, 0, 0.1);
+    color: #ffc300;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #ffc300;
+}
+
+.permission-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+    color: #ccc;
+}
+
+.permission-table tr:hover td {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.gdpr-rights {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.gdpr-item {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid #339af0;
+}
+
+.gdpr-item strong {
+    color: #fff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.gdpr-item span {
+    color: #aaa;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.security-logs {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.log-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    transition: background 0.3s ease;
+}
+
+.log-entry:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.log-entry.info { 
+    background: rgba(51, 154, 240, 0.1); 
+    border-left: 3px solid #339af0;
+}
+.log-entry.warning { 
+    background: rgba(255, 212, 59, 0.1); 
+    border-left: 3px solid #ffd43b;
+}
+.log-entry.error { 
+    background: rgba(255, 107, 107, 0.1); 
+    border-left: 3px solid #ff6b6b;
+}
+
+.log-time {
+    color: #888;
+    font-size: 0.8em;
+    min-width: 120px;
+}
+
+.log-message {
+    color: #fff;
+    flex: 1;
+    margin: 0 15px;
+}
+
+.log-user {
+    color: #ffc300;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: right;
+}
+
+.security-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.security-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background: rgba(255, 195, 0, 0.1);
+    color: #ffc300;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 195, 0, 0.3);
+}
+
+.security-btn:hover {
+    background: rgba(255, 195, 0, 0.2);
+    transform: translateX(5px);
+    color: #ffd43b;
+}
+
+.system-status {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+}
+
+.status-label {
+    color: #ccc;
+    font-weight: 600;
+}
+
+.status-value {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 700;
+}
+
+.status-value.active {
+    background: rgba(81, 207, 102, 0.2);
+    color: #51cf66;
+    border: 1px solid rgba(81, 207, 102, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .security-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .log-entry {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .log-time, .log-user {
+        min-width: auto;
+    }
+}
+</style>
+{% endblock %}

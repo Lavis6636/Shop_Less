@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="app-container">
+    <section class="checkout-layout">
+
+        <!-- Left: Payment Form -->
+        <div class="checkout-left">
+            <h2 class="section-title">Payment / Checkout</h2>
+
+            <form id="payment-form" method="POST" action="{{ url_for('checkout') }}">
+                <input type="text" name="card_name" placeholder="Name on card" required>
+                <input type="text" name="card_number" placeholder="Card number" pattern="[0-9]{12,19}" required>
+                <input type="text" name="cvv" placeholder="CVV" pattern="[0-9]{3,4}" required>
+                <button type="submit" class="btn primary-btn large-btn">Pay Now</button>
+            </form>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages" style="margin-top:10px;">
+                    {% for category, message in messages %}
+                        <p class="flash {{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
+            {% if not cart %}
+                <p>Your cart is empty.</p>
+            {% else %}
+            <!-- Payment Confirmation -->
+            {% if session.get('checkout_success') %}
+            <div id="payment-confirmation" style="margin-top:20px;">
+                <h3 style="color:green;">Payment Successful!</h3>
+                <p>Thank you for your purchase. Your transaction has been recorded.</p>
+                
+                <!-- Paid Items -->
+                <div id="paid-items-list">
+                    <ul>
+                        {% for key, item in cart.items() %}
+                            <li>{{ item.name }} ({{ item.storage }}) x {{ item.quantity }} - M{{ item.total_price|round(2) }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="total-row" style="margin-top:10px;">
+                        <strong>Total Paid:</strong>
+                        <span>M{{ total_price|round(2) }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- Right: Order Summary -->
+        <aside class="checkout-right">
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div id="summary-items">
+                    {% if cart %}
+                        <ul>
+                        {% for key, item in cart.items() %}
+                            <li>{{ item.name }} ({{ item.storage }}) x {{ item.quantity }} - M{{ item.total_price|round(2) }}</li>
+                        {% endfor %}
+                        </ul>
+                        <div class="total-row">
+                            <strong>Total:</strong>
+                            <span>M{{ total_price|round(2) }}</span>
+                        </div>
+                    {% else %}
+                        <p>Your cart is empty.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+
+    </section>
+</div>
+{% endblock %}

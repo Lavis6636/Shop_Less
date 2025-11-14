@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="site-content-wrapper cart-page">
+    <h1 class="cart-title">Your Cart 🛒</h1>
+
+    {% if cart and cart|length > 0 %}
+        <form method="POST" action="{{ url_for('update_cart_quantity') }}">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Storage</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, item in cart.items() %}
+                    <tr>
+                        <td class="product-cell">
+                            <img src="{{ url_for('static', filename='images/' ~ item.image) }}" 
+                                 alt="{{ item.name }}" 
+                                 onerror="this.src='{{ url_for('static', filename='images/placeholder-phone.jpg') }}'">
+                            <span>{{ item.name }}</span>
+                        </td>
+                        <td>{{ item.storage }}</td>
+                        <td>M{{ item.unit_price|round(2) }}</td>
+                        <td>
+                            <input type="number" name="quantity-{{ key }}" value="{{ item.quantity }}" min="1" class="quantity-input">
+                        </td>
+                        <td>M{{ item.total_price|round(2) }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('remove_from_cart', cart_key=key) }}">
+                            <button type="submit" class="remove-btn">
+                                <!-- Bin Icon SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="bin-icon" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                    <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.8-.8 1.5-1.6 1.5H8.1c-.8 0-1.5-.7-1.6-1.5L5 9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2zm4 0v8h2v-8h-2z"/>
+                                </svg>
+                            </button>
+
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="cart-summary">
+                <p>Grand Total: M{{ total_price|round(2) }}</p>
+            </div>
+
+            <div class="cart-actions">
+                <button type="submit" class="update-cart-btn">Update Cart</button>
+                <a href="{{ url_for('checkout') }}" class="checkout-btn">Proceed to Checkout</a>
+            </div>
+        </form>
+    {% else %}
+        <p class="empty-cart">Your cart is empty. 
+            <a href="{{ url_for('products') }}">Browse products</a> to add items.
+        </p>
+    {% endif %}
+</section>
+{% endblock %}

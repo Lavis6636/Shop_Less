@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="site-content-wrapper">
+    <div class="mb-6">
+        <a href="{{ url_for('products') }}" class="back-link">← Back to Products</a>
+    </div>
+
+    <div class="detail-page">
+        <!-- Product Image -->
+        <div class="product-image-container">
+            {% if product.image %}
+                <img src="{{ url_for('static', filename='images/' ~ product.image) }}" 
+                     alt="{{ product.name }}" 
+                     class="product-image"
+                     onerror="this.src='{{ url_for('static', filename='images/placeholder-phone.jpg') }}'">
+            {% else %}
+                <div class="placeholder-image">No Image Available</div>
+            {% endif %}
+
+            {% if product.predicted_sales and product.predicted_sales != 'N/A' %}
+                <p class="mt-4 text-green-600 font-bold">
+                    <i class="fas fa-chart-line"></i> Predicted Daily Sales: {{ product.predicted_sales }} units
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info-container">
+            <h1>{{ product.name }}</h1>
+            {% if product.series %}
+                <p class="series">{{ product.series }} Series</p>
+            {% endif %}
+
+            <div class="product-price text-3xl font-bold my-4">
+                M<span id="product-price-display">{{ product.base_price|round(2) }}</span>
+            </div>
+
+            {% if product.description %}
+            <div class="description">
+                <h3>Description</h3>
+                <p>{{ product.description }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Add to Cart Form (SKU based) -->
+            <form method="POST" action="{{ url_for('add_to_cart', product_sku=product.sku) }}" id="add-to-cart-form">
+                <div class="product-configuration">
+
+                    <!-- Storage Options -->
+                    <div class="storage-options my-4">
+                        <h3>Storage Options</h3>
+                        <div class="storage-buttons">
+                            {% for storage, mult in multipliers.items() %}
+                            <button type="button" 
+                                    class="storage-btn {% if loop.first %}selected{% endif %}" 
+                                    data-storage="{{ storage }}" 
+                                    data-multiplier="{{ mult }}">
+                                {{ storage }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="selected-storage" name="storage" 
+                           value="{{ multipliers.keys()|first or '64GB' }}">
+                    <input type="hidden" id="product-base-price" value="{{ product.base_price }}">
+
+                    <!-- Quantity -->
+                    <div class="quantity-input my-4">
+                        <label for="quantity" class="block font-semibold mb-1">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" 
+                               class="border p-2 w-20 text-center">
+                    </div>
+
+                    <!-- Add to Cart Button -->
+                    <div class="add-to-cart-section">
+                    {% if is_authenticated %}
+                        <button type="submit" class="add-to-cart-btn">ADD TO BAG 🛒</button>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="login-to-cart-btn">
+                            Sign In to Add to Cart
+                        </a>
+                    {% endif %}
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- External JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

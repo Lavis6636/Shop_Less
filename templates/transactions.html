@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-container">
+    <h2 class="section-title">Transactions</h2>
+
+    <!-- Admin Navigation -->
+    <div class="admin-nav">
+        <a href="{{ url_for('add_product') }}" class="btn primary-btn"><i class="fas fa-plus"></i> Add Product</a>
+        <a href="{{ url_for('view_transactions') }}" class="btn secondary-btn"><i class="fas fa-receipt"></i> View Transactions</a>
+        <a href="{{ url_for('blockchain_ledger') }}" class="btn secondary-btn"><i class="fas fa-cube"></i> Blockchain Ledger</a>
+    </div>
+
+    <div class="admin-section">
+        <h3 class="admin-section-title">All Transactions</h3>
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>User</th>
+                        <th>Items</th>
+                        <th>Total Price</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td>{{ tx.transaction_id }}</td>
+                        <td>{{ tx.user_id }}</td>
+                        <td>
+                            <ul>
+                                {% for item in tx.items %}
+                                    <li>{{ item.name }} ({{ item.sku }}) x {{ item.quantity }} - M{{ item.total_price|round(2) }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>M{{ tx.total_price|round(2) }}</td>
+                        <td>{{ tx.timestamp|datetimeformat }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

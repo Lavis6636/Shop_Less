@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+    <h2 class="section-title">Add New Product</h2>
+    <div class="products-header-bar"></div>
+    
+    <div class="form-card">
+        <form method="POST" action="{{ url_for('add_product') }}">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">SKU</label>
+                    <input type="text" name="sku" class="form-input" placeholder="Product SKU">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Product Name</label>
+                    <input type="text" name="name" class="form-input" placeholder="Product Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Series</label>
+                    <input type="text" name="series" class="form-input" placeholder="Product Series">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-textarea" placeholder="Product Description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Base Price</label>  <!-- Changed label for clarity -->
+                    <input type="number" name="base_price" class="form-input" step="0.01" min="0" placeholder="0.00" required>  <!-- Changed name to base_price -->
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Image Filename</label>
+                    <input type="text" name="image" class="form-input" placeholder="images/filename.jpg">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn primary-btn large-btn" style="margin-top: 30px;">Add Product</button>
+        </form>
+    </div>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="success-message">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

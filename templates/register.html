@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Animated Border -->
+        <div class="animated-border"></div>
+        
+        <div class="auth-content">
+            <div class="auth-header">
+                <h2 class="auth-title">Create Account</h2>
+                <p class="auth-subtitle">Join Shop Less today</p>
+                <div class="auth-header-bar"></div>
+            </div>
+            
+            <form method="POST" action="{{ url_for('register') }}" class="auth-form">
+                <div class="form-group">
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" name="username" placeholder=" " required class="auth-input" id="reg-username">
+                        <label for="reg-username" class="floating-label">Username</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="input-container">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" name="email" placeholder=" " class="auth-input" id="email">
+                        <label for="email" class="floating-label">Email (optional)</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="input-container">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" name="password" placeholder=" " required class="auth-input" id="reg-password">
+                        <label for="reg-password" class="floating-label">Password</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="role-label">Account Type</label>
+                    <div class="role-options">
+                        <label class="role-option">
+                            <input type="radio" name="role" value="Customer" checked>
+                            <span class="role-card">
+                                <i class="fas fa-user"></i>
+                                <span class="role-text">Customer</span>
+                            </span>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="role" value="Admin">
+                            <span class="role-card">
+                                <i class="fas fa-crown"></i>
+                                <span class="role-text">Admin</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <span class="btn-text">Create Account</span>
+                    <i class="fas fa-user-plus btn-icon"></i>
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Already have an account? 
+                    <a href="{{ url_for('login') }}" class="auth-link">Login here</a>
+                </p>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="{{ 'error-message' if category == 'danger' else 'success-message' }}">
+                            <i class="fas fa-{{ 'exclamation-circle' if category == 'danger' else 'check-circle' }}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+{% endblock %}

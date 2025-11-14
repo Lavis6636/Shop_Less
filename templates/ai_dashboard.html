@@ -1,0 +1,55 @@
+{% extends "base.html" %} 
+{% block content %}
+
+<section class="ai-dashboard">
+    <h2 class="section-title">AI Product Insights</h2>
+    <div class="products-header-bar"></div>
+
+    {% if products %}
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="ai-card product-card"
+            data-name="{{ product.name }}"              {# Must be inside the loop #}
+            data-price="{{ product.base_price }}"       {# Must be inside the loop #}
+            data-category="{{ product.series }}"        {# Must be inside the loop #}
+            data-sku="{{ product.sku }}">               {# Must be inside the loop #}
+            
+            <img src="{{ url_for('static', filename=product.image) }}" 
+                alt="{{ product.name }}"
+                onerror="this.src='{{ url_for('static', filename='images/placeholder-phone.jpg') }}'">
+
+            <h3>{{ product.name }}</h3>
+            <p class="price">M{{ product.price|int }}</p>
+
+            <div class="prediction-output">
+                <div class="ai-header">AI Prediction</div>
+                <div class="ai-row">
+                    <span class="ai-label">Demand:</span>
+                    <span class="ai-value"></span>
+                </div>
+                <div class="ai-row">
+                    <span class="ai-label">Stock Risk:</span>
+                    <span class="ai-value"></span>
+                </div>
+                <div class="ai-row">
+                    <span class="ai-label">Recommendation:</span>
+                    <span class="ai-value"></span>
+                </div>
+            </div>
+
+            <button class="primary-btn view-btn" 
+                    onclick="location.href='{{ url_for('product_detail', product_sku=product.sku) }}'">
+                View Product
+            </button>
+
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>No products available for AI analysis.</h3>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

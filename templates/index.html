@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-main">
+    <div class="animated-background">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </div>
+
+    <div class="hero-content-centered">
+        <div class="welcome-message">
+            <h1 class="main-title">
+                <span class="title-word title-word-1">Welcome</span>
+                <span class="title-word title-word-2">To</span>
+                <span class="title-word title-word-3">Shop-Less</span>
+            </h1>
+            <p class="subtitle">Shop Smarter, Save More</p>
+            <a href="{{ url_for('login') }}" class="cta-button">
+                <span>Get Started</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="slideshow-container">
+            {% if products %}
+            <div class="slideshow-wrapper">
+                {% for product in products %}
+                <div class="slide {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
+                    <div class="slide-content">
+                        <div class="phone-image">
+                            {% set img_path = product.image if product.image else 'images/placeholder-phone.jpg' %}
+                        <img src="{{ url_for('static', filename='images/' ~ product.image) }}" 
+                         alt="{{ product.name }}"
+                         onerror="this.src='{{ url_for('static', filename='images/placeholder-phone.jpg') }}'">
+                        </div>
+                        <div class="phone-info">
+                            <h3>{{ product.name }}</h3>
+                            <p class="phone-price">M{{ product.base_price|int }}</p>
+                            <a href="{{ url_for('product_detail', product_sku=product.sku) }}" 
+                               class="view-details-btn">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="slideshow-controls">
+                <button class="control-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="slide-indicators">
+                    {% for product in products %}
+                    <button class="indicator {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}"></button>
+                    {% endfor %}
+                </div>
+                <button class="control-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            {% else %}
+                <p>No featured products available.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="site-content-wrapper">
+        <h2 class="section-title">Why Choose Shop Less?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Authentic Products</h3>
+                <p>100% genuine iPhones with warranty and quality guarantee</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-truck"></i></div>
+                <h3>Fast Delivery</h3>
+                <p>Free shipping and quick delivery to your doorstep</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                <h3>24/7 Support</h3>
+                <p>Round-the-clock customer service and technical support</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <h3>Secure Payment</h3>
+                <p>Blockchain-verified secure transactions</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="site-content-wrapper">
+        <div class="cta-content">
+            <h2>Ready to Upgrade Your iPhone?</h2>
+            <p>Join thousands of satisfied customers who trust Shop Less for their mobile needs</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('register') }}" class="btn primary-btn large-btn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </a>
+                <a href="{{ url_for('products') }}" class="btn secondary-btn large-btn">
+                    <i class="fas fa-eye"></i> Browse Products
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}
